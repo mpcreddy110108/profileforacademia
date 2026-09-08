@@ -10,14 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApplicationsRouteImport } from './routes/applications'
 import { Route as AssessmentsRouteImport } from './routes/assessments'
 import { Route as EvidenceRouteImport } from './routes/evidence'
+import { Route as LearningPathRouteImport } from './routes/learning-path'
+import { Route as OpportunitiesRouteImport } from './routes/opportunities'
+import { Route as ReadinessRouteImport } from './routes/readiness'
 import { Route as ResumeExtractorRouteImport } from './routes/resume-extractor'
 import { Route as SkillGapRouteImport } from './routes/skill-gap'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApplicationsRoute = ApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AssessmentsRoute = AssessmentsRouteImport.update({
@@ -28,6 +37,21 @@ const AssessmentsRoute = AssessmentsRouteImport.update({
 const EvidenceRoute = EvidenceRouteImport.update({
   id: '/evidence',
   path: '/evidence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningPathRoute = LearningPathRouteImport.update({
+  id: '/learning-path',
+  path: '/learning-path',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitiesRoute = OpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadinessRoute = ReadinessRouteImport.update({
+  id: '/readiness',
+  path: '/readiness',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResumeExtractorRoute = ResumeExtractorRouteImport.update({
@@ -43,45 +67,82 @@ const SkillGapRoute = SkillGapRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
   '/assessments': typeof AssessmentsRoute
   '/evidence': typeof EvidenceRoute
+  '/learning-path': typeof LearningPathRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/readiness': typeof ReadinessRoute
   '/resume-extractor': typeof ResumeExtractorRoute
   '/skill-gap': typeof SkillGapRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
   '/assessments': typeof AssessmentsRoute
   '/evidence': typeof EvidenceRoute
+  '/learning-path': typeof LearningPathRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/readiness': typeof ReadinessRoute
   '/resume-extractor': typeof ResumeExtractorRoute
   '/skill-gap': typeof SkillGapRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
   '/assessments': typeof AssessmentsRoute
   '/evidence': typeof EvidenceRoute
+  '/learning-path': typeof LearningPathRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/readiness': typeof ReadinessRoute
   '/resume-extractor': typeof ResumeExtractorRoute
   '/skill-gap': typeof SkillGapRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/assessments' | '/evidence' | '/resume-extractor' | '/skill-gap'
+    | '/'
+    | '/applications'
+    | '/assessments'
+    | '/evidence'
+    | '/learning-path'
+    | '/opportunities'
+    | '/readiness'
+    | '/resume-extractor'
+    | '/skill-gap'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/assessments' | '/evidence' | '/resume-extractor' | '/skill-gap'
+  to:
+    | '/'
+    | '/applications'
+    | '/assessments'
+    | '/evidence'
+    | '/learning-path'
+    | '/opportunities'
+    | '/readiness'
+    | '/resume-extractor'
+    | '/skill-gap'
   id:
     | '__root__'
     | '/'
+    | '/applications'
     | '/assessments'
     | '/evidence'
+    | '/learning-path'
+    | '/opportunities'
+    | '/readiness'
     | '/resume-extractor'
     | '/skill-gap'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApplicationsRoute: typeof ApplicationsRoute
   AssessmentsRoute: typeof AssessmentsRoute
   EvidenceRoute: typeof EvidenceRoute
+  LearningPathRoute: typeof LearningPathRoute
+  OpportunitiesRoute: typeof OpportunitiesRoute
+  ReadinessRoute: typeof ReadinessRoute
   ResumeExtractorRoute: typeof ResumeExtractorRoute
   SkillGapRoute: typeof SkillGapRoute
 }
@@ -93,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/applications': {
+      id: '/applications'
+      path: '/applications'
+      fullPath: '/applications'
+      preLoaderRoute: typeof ApplicationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/assessments': {
@@ -107,6 +175,27 @@ declare module '@tanstack/react-router' {
       path: '/evidence'
       fullPath: '/evidence'
       preLoaderRoute: typeof EvidenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning-path': {
+      id: '/learning-path'
+      path: '/learning-path'
+      fullPath: '/learning-path'
+      preLoaderRoute: typeof LearningPathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities': {
+      id: '/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/readiness': {
+      id: '/readiness'
+      path: '/readiness'
+      fullPath: '/readiness'
+      preLoaderRoute: typeof ReadinessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/resume-extractor': {
@@ -128,8 +217,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApplicationsRoute: ApplicationsRoute,
   AssessmentsRoute: AssessmentsRoute,
   EvidenceRoute: EvidenceRoute,
+  LearningPathRoute: LearningPathRoute,
+  OpportunitiesRoute: OpportunitiesRoute,
+  ReadinessRoute: ReadinessRoute,
   ResumeExtractorRoute: ResumeExtractorRoute,
   SkillGapRoute: SkillGapRoute,
 }
