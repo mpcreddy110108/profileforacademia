@@ -679,8 +679,8 @@ function CompetencyHub() {
 <span className="material-symbols-outlined text-[16px]">visibility</span>
 <span>Match Breakdown</span>
 </button>
-<button type="button" onClick={() => setSaved((p) => ({ ...p, tfl: !p.tfl }))} className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
-<span className={`material-symbols-outlined text-[20px] ${saved.tfl ? "text-primary" : ""}`}>{saved.tfl ? "bookmark" : "bookmark_border"}</span>
+<button type="button" onClick={() => setSaved((p) => ({ ...p, tfl: !p["tfl"] }))} className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
+<span className={`material-symbols-outlined text-[20px] ${saved["tfl"] ? "text-primary" : ""}`}>{saved["tfl"] ? "bookmark" : "bookmark_border"}</span>
 </button>
 </div>
 <button type="button" onClick={() => alert("Application submitted via SkillBridge Direct-Verify API to TensorFlow Labs.")} className="px-unit-4 py-unit-2 bg-primary text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider hover:bg-primary-container flex items-center gap-unit-2 shadow-xs">
@@ -744,8 +744,8 @@ function CompetencyHub() {
 <span className="material-symbols-outlined text-[16px]">visibility</span>
 <span>Match Breakdown</span>
 </button>
-<button type="button" onClick={() => setSaved((p) => ({ ...p, dpa: !p.dpa }))} className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
-<span className={`material-symbols-outlined text-[20px] ${saved.dpa ? "text-primary" : ""}`}>{saved.dpa ? "bookmark" : "bookmark_border"}</span>
+<button type="button" onClick={() => setSaved((p) => ({ ...p, dpa: !p["dpa"] }))} className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
+<span className={`material-symbols-outlined text-[20px] ${saved["dpa"] ? "text-primary" : ""}`}>{saved["dpa"] ? "bookmark" : "bookmark_border"}</span>
 </button>
 </div>
 <button type="button" onClick={() => alert("Instant candidate fast-track dispatch triggered for DataPulse Analytics.")} className="px-unit-4 py-unit-2 bg-secondary text-on-secondary font-label-md text-label-md font-bold uppercase tracking-wider hover:opacity-90 flex items-center gap-unit-2 shadow-xs">
