@@ -12,9 +12,9 @@ export type Evidence = {
   skills: SkillId[];
   verification: VerificationStatus;
   /** Only for assessment evidence: 0-100 score from a taken quiz. */
-  score?: number;
+  score?: number | undefined;
   createdAt: string;
-  source?: "manual" | "resume-extractor" | "assessment" | "learning-path";
+  source?: undefined | "manual" | "resume-extractor" | "assessment" | "learning-path";
 };
 
 export type LearningStepState = { skill: SkillId; completedAt: string };
@@ -42,7 +42,7 @@ export type Competency = {
   score: number;
   level: CompetencyLevel;
   evidenceIds: string[];
-  assessmentScore?: number;
+  assessmentScore?: number | undefined;
   explanation: string;
 };
 
