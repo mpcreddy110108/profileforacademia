@@ -10,33 +10,180 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApplicationsRouteImport } from './routes/applications'
+import { Route as AssessmentsRouteImport } from './routes/assessments'
+import { Route as EvidenceRouteImport } from './routes/evidence'
+import { Route as InstitutionRouteImport } from './routes/institution'
+import { Route as LearningPathRouteImport } from './routes/learning-path'
+import { Route as OpportunitiesRouteImport } from './routes/opportunities'
+import { Route as ReadinessRouteImport } from './routes/readiness'
+import { Route as ResumeExtractorRouteImport } from './routes/resume-extractor'
+import { Route as SkillGapRouteImport } from './routes/skill-gap'
+import { Route as RecruiterCandidatesRouteImport } from './routes/recruiter.candidates'
+import { Route as RecruiterPostRouteImport } from './routes/recruiter.post'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApplicationsRoute = ApplicationsRouteImport.update({
+  id: '/applications',
+  path: '/applications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssessmentsRoute = AssessmentsRouteImport.update({
+  id: '/assessments',
+  path: '/assessments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvidenceRoute = EvidenceRouteImport.update({
+  id: '/evidence',
+  path: '/evidence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstitutionRoute = InstitutionRouteImport.update({
+  id: '/institution',
+  path: '/institution',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningPathRoute = LearningPathRouteImport.update({
+  id: '/learning-path',
+  path: '/learning-path',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpportunitiesRoute = OpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadinessRoute = ReadinessRouteImport.update({
+  id: '/readiness',
+  path: '/readiness',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResumeExtractorRoute = ResumeExtractorRouteImport.update({
+  id: '/resume-extractor',
+  path: '/resume-extractor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkillGapRoute = SkillGapRouteImport.update({
+  id: '/skill-gap',
+  path: '/skill-gap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecruiterCandidatesRoute = RecruiterCandidatesRouteImport.update({
+  id: '/recruiter/candidates',
+  path: '/recruiter/candidates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecruiterPostRoute = RecruiterPostRouteImport.update({
+  id: '/recruiter/post',
+  path: '/recruiter/post',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
+  '/assessments': typeof AssessmentsRoute
+  '/evidence': typeof EvidenceRoute
+  '/institution': typeof InstitutionRoute
+  '/learning-path': typeof LearningPathRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/readiness': typeof ReadinessRoute
+  '/resume-extractor': typeof ResumeExtractorRoute
+  '/skill-gap': typeof SkillGapRoute
+  '/recruiter/candidates': typeof RecruiterCandidatesRoute
+  '/recruiter/post': typeof RecruiterPostRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
+  '/assessments': typeof AssessmentsRoute
+  '/evidence': typeof EvidenceRoute
+  '/institution': typeof InstitutionRoute
+  '/learning-path': typeof LearningPathRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/readiness': typeof ReadinessRoute
+  '/resume-extractor': typeof ResumeExtractorRoute
+  '/skill-gap': typeof SkillGapRoute
+  '/recruiter/candidates': typeof RecruiterCandidatesRoute
+  '/recruiter/post': typeof RecruiterPostRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/applications': typeof ApplicationsRoute
+  '/assessments': typeof AssessmentsRoute
+  '/evidence': typeof EvidenceRoute
+  '/institution': typeof InstitutionRoute
+  '/learning-path': typeof LearningPathRoute
+  '/opportunities': typeof OpportunitiesRoute
+  '/readiness': typeof ReadinessRoute
+  '/resume-extractor': typeof ResumeExtractorRoute
+  '/skill-gap': typeof SkillGapRoute
+  '/recruiter/candidates': typeof RecruiterCandidatesRoute
+  '/recruiter/post': typeof RecruiterPostRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/applications'
+    | '/assessments'
+    | '/evidence'
+    | '/institution'
+    | '/learning-path'
+    | '/opportunities'
+    | '/readiness'
+    | '/resume-extractor'
+    | '/skill-gap'
+    | '/recruiter/candidates'
+    | '/recruiter/post'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/applications'
+    | '/assessments'
+    | '/evidence'
+    | '/institution'
+    | '/learning-path'
+    | '/opportunities'
+    | '/readiness'
+    | '/resume-extractor'
+    | '/skill-gap'
+    | '/recruiter/candidates'
+    | '/recruiter/post'
+  id:
+    | '__root__'
+    | '/'
+    | '/applications'
+    | '/assessments'
+    | '/evidence'
+    | '/institution'
+    | '/learning-path'
+    | '/opportunities'
+    | '/readiness'
+    | '/resume-extractor'
+    | '/skill-gap'
+    | '/recruiter/candidates'
+    | '/recruiter/post'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApplicationsRoute: typeof ApplicationsRoute
+  AssessmentsRoute: typeof AssessmentsRoute
+  EvidenceRoute: typeof EvidenceRoute
+  InstitutionRoute: typeof InstitutionRoute
+  LearningPathRoute: typeof LearningPathRoute
+  OpportunitiesRoute: typeof OpportunitiesRoute
+  ReadinessRoute: typeof ReadinessRoute
+  ResumeExtractorRoute: typeof ResumeExtractorRoute
+  SkillGapRoute: typeof SkillGapRoute
+  RecruiterCandidatesRoute: typeof RecruiterCandidatesRoute
+  RecruiterPostRoute: typeof RecruiterPostRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +195,99 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/applications': {
+      id: '/applications'
+      path: '/applications'
+      fullPath: '/applications'
+      preLoaderRoute: typeof ApplicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/assessments': {
+      id: '/assessments'
+      path: '/assessments'
+      fullPath: '/assessments'
+      preLoaderRoute: typeof AssessmentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evidence': {
+      id: '/evidence'
+      path: '/evidence'
+      fullPath: '/evidence'
+      preLoaderRoute: typeof EvidenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institution': {
+      id: '/institution'
+      path: '/institution'
+      fullPath: '/institution'
+      preLoaderRoute: typeof InstitutionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learning-path': {
+      id: '/learning-path'
+      path: '/learning-path'
+      fullPath: '/learning-path'
+      preLoaderRoute: typeof LearningPathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/opportunities': {
+      id: '/opportunities'
+      path: '/opportunities'
+      fullPath: '/opportunities'
+      preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/readiness': {
+      id: '/readiness'
+      path: '/readiness'
+      fullPath: '/readiness'
+      preLoaderRoute: typeof ReadinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resume-extractor': {
+      id: '/resume-extractor'
+      path: '/resume-extractor'
+      fullPath: '/resume-extractor'
+      preLoaderRoute: typeof ResumeExtractorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/skill-gap': {
+      id: '/skill-gap'
+      path: '/skill-gap'
+      fullPath: '/skill-gap'
+      preLoaderRoute: typeof SkillGapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recruiter/candidates': {
+      id: '/recruiter/candidates'
+      path: '/recruiter/candidates'
+      fullPath: '/recruiter/candidates'
+      preLoaderRoute: typeof RecruiterCandidatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recruiter/post': {
+      id: '/recruiter/post'
+      path: '/recruiter/post'
+      fullPath: '/recruiter/post'
+      preLoaderRoute: typeof RecruiterPostRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApplicationsRoute: ApplicationsRoute,
+  AssessmentsRoute: AssessmentsRoute,
+  EvidenceRoute: EvidenceRoute,
+  InstitutionRoute: InstitutionRoute,
+  LearningPathRoute: LearningPathRoute,
+  OpportunitiesRoute: OpportunitiesRoute,
+  ReadinessRoute: ReadinessRoute,
+  ResumeExtractorRoute: ResumeExtractorRoute,
+  SkillGapRoute: SkillGapRoute,
+  RecruiterCandidatesRoute: RecruiterCandidatesRoute,
+  RecruiterPostRoute: RecruiterPostRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
