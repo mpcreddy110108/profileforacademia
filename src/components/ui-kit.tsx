@@ -7,9 +7,9 @@ export function Panel({
   children,
   className = "",
 }: {
-  title?: string;
-  subtitle?: string;
-  right?: ReactNode;
+  title?: string | undefined;
+  subtitle?: string | undefined;
+  right?: ReactNode | undefined;
   children: ReactNode;
   className?: string;
 }) {
@@ -38,7 +38,7 @@ export function PageHeader({
   eyebrow: string;
   title: string;
   description: string;
-  right?: ReactNode;
+  right?: ReactNode | undefined;
 }) {
   return (
     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-unit-4 mb-unit-6">
