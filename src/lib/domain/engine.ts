@@ -297,3 +297,14 @@ const SKILLS_FOR_EXTRACTION = SKILLS;
 export function bestRoleFor(profile: Competency[]) {
   return ROLES.map((r) => analyseRole(profile, r.id)).sort((a, b) => b.fit - a.fit)[0]!;
 }
+
+/** Wraps a plain skill→score map (demo cohort data) as a competency profile. */
+export function profileFromScores(map: Record<string, number>): Competency[] {
+  return Object.entries(map).map(([skill, score]) => ({
+    skill,
+    score,
+    level: score >= 75 ? "strong" : score >= 45 ? "developing" : "gap",
+    evidenceIds: [],
+    explanation: `${score}% from this student's recorded portfolio (demo cohort dataset).`,
+  }));
+}
