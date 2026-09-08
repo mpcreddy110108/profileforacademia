@@ -52,7 +52,7 @@ export function PageHeader({
   );
 }
 
-export function Bar({ value, target, tone = "primary" }: { value: number; target?: number; tone?: "primary" | "secondary" | "error" }) {
+export function Bar({ value, target, tone = "primary" }: { value: number; target?: number | undefined; tone?: "primary" | "secondary" | "error" }) {
   const color = tone === "error" ? "bg-error" : tone === "secondary" ? "bg-secondary" : "bg-primary";
   return (
     <div className="relative h-2 w-full bg-surface-container-high">
@@ -81,7 +81,7 @@ export function Chip({ children, tone = "neutral" }: { children: ReactNode; tone
   );
 }
 
-export function Stat({ label, value, hint, tone }: { label: string; value: string; hint?: string; tone?: "good" | "bad" }) {
+export function Stat({ label, value, hint, tone }: { label: string; value: string; hint?: string | undefined; tone?: "good" | "bad" | undefined }) {
   return (
     <div className="bg-surface-container-lowest border border-outline-variant p-unit-4">
       <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">{label}</span>
