@@ -1,4 +1,50 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+
+type Skill = { name: string; cur: string; req: string; status: string; priority: string; priorityColor: string };
+type RoleKey = "ml" | "fs" | "da";
+
+const SAT = "text-secondary bg-secondary-container";
+const CRIT = "text-on-error-container bg-error-container";
+const MED = "text-on-tertiary-container bg-surface-container-highest";
+
+const roleData: Record<RoleKey, { title: string; fit: string; skills: Skill[] }> = {
+  ml: {
+    title: "ML Engineer Intern",
+    fit: "88%",
+    skills: [
+      { name: "Python Architecture", cur: "94%", req: "85%", status: "Verified Repo", priority: "Satisfied", priorityColor: SAT },
+      { name: "Data Structures & Algo", cur: "88%", req: "80%", status: "Proctored Quiz", priority: "Satisfied", priorityColor: SAT },
+      { name: "PyTorch / Deep Learning", cur: "38%", req: "80%", status: "Zero Evidence", priority: "Critical", priorityColor: CRIT },
+      { name: "Cloud Infra (AWS)", cur: "25%", req: "60%", status: "Self-Reported", priority: "Medium", priorityColor: MED },
+      { name: "SQL Querying", cur: "86%", req: "70%", status: "NPTEL Cert", priority: "Satisfied", priorityColor: SAT },
+      { name: "Docker / Packaging", cur: "65%", req: "60%", status: "Coursework", priority: "Satisfied", priorityColor: SAT },
+    ],
+  },
+  fs: {
+    title: "Full Stack Developer",
+    fit: "74%",
+    skills: [
+      { name: "Python Architecture", cur: "94%", req: "75%", status: "Verified Repo", priority: "Satisfied", priorityColor: SAT },
+      { name: "SQL Querying", cur: "86%", req: "80%", status: "NPTEL Cert", priority: "Satisfied", priorityColor: SAT },
+      { name: "React / Frontend UI", cur: "40%", req: "85%", status: "Basic Labs", priority: "Critical", priorityColor: CRIT },
+      { name: "Node.js / Express", cur: "55%", req: "75%", status: "Mini Project", priority: "Medium", priorityColor: MED },
+      { name: "Git & Deployment", cur: "72%", req: "70%", status: "Hackathon", priority: "Satisfied", priorityColor: SAT },
+      { name: "REST APIs & GraphQL", cur: "60%", req: "75%", status: "Coursework", priority: "Medium", priorityColor: MED },
+    ],
+  },
+  da: {
+    title: "Data Analyst",
+    fit: "94%",
+    skills: [
+      { name: "SQL Querying & DDL", cur: "86%", req: "80%", status: "NPTEL Cert", priority: "Satisfied", priorityColor: SAT },
+      { name: "Python Data Analysis", cur: "94%", req: "80%", status: "Verified Repo", priority: "Satisfied", priorityColor: SAT },
+      { name: "Data Visualization", cur: "82%", req: "75%", status: "Capstone CNN", priority: "Satisfied", priorityColor: SAT },
+      { name: "Statistical Testing", cur: "79%", req: "70%", status: "Academic Major", priority: "Satisfied", priorityColor: SAT },
+      { name: "Tableau / BI Tooling", cur: "45%", req: "60%", status: "Coursework", priority: "Medium", priorityColor: MED },
+    ],
+  },
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,6 +69,21 @@ export const Route = createFileRoute("/")({
 });
 
 function CompetencyHub() {
+  const [view, setView] = useState<"bars" | "radar">("bars");
+  const [role, setRole] = useState<RoleKey>("ml");
+  const [bannerOpen, setBannerOpen] = useState(true);
+  const [saved, setSaved] = useState<Record<string, boolean>>({});
+  const [modal, setModal] = useState<{ company: string; role: string; score: number; explanation: string } | null>(null);
+  const active = roleData[role];
+  const roleBtn = (k: RoleKey) =>
+    k === role
+      ? "px-unit-2 py-1.5 font-label-sm text-label-sm bg-primary text-on-primary font-bold shadow-xs truncate"
+      : "px-unit-2 py-1.5 font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface font-semibold truncate";
+  const viewBtn = (v: "bars" | "radar") =>
+    v === view
+      ? "px-unit-3 py-1 font-label-md text-label-md bg-surface-container-lowest text-primary font-semibold shadow-xs"
+      : "px-unit-3 py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface";
+
   return (
     <div className="bg-surface font-body-md text-body-md text-on-surface antialiased">
 <aside className="fixed left-0 top-0 bottom-8 w-72 bg-surface-container-lowest z-40 flex flex-col border-r border-outline-variant"><div className="h-16 px-unit-4 flex items-center justify-between border-b border-outline-variant bg-surface-container-low"><div className="flex items-center gap-unit-2"><div className="w-8 h-8 bg-primary text-on-primary flex items-center justify-center font-headline-sm text-headline-sm">AF</div><div className="flex flex-col"><span className="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">ApexForge</span><span className="font-code-sm text-code-sm text-on-surface-variant leading-tight">SkillBridge AI</span></div></div><span className="font-label-sm text-label-sm px-unit-1 py-0.5 bg-secondary-container text-on-secondary-container font-semibold">SIH26044</span></div><div className="flex-1 overflow-y-auto py-unit-4 px-unit-3 space-y-unit-6"><nav className="space-y-unit-1" data-active-classes="bg-primary-container text-on-primary-container font-semibold"><div className="px-unit-2 pb-unit-1 flex items-center justify-between"><span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Student Portal</span><span className="font-code-sm text-code-sm text-on-surface-variant">v2.4</span></div><a aria-current="page" className="flex items-center gap-unit-3 px-unit-3 py-unit-2 transition-colors bg-primary-container text-on-primary-container font-semibold" data-path="competency-hub" href="#"><span className="material-symbols-outlined text-[18px]">verified</span><span className="font-label-md text-label-md">Competency Hub</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="evidence-portfolio" href="#"><span className="material-symbols-outlined text-[18px]">folder_special</span><span className="font-label-md text-label-md">Evidence Portfolio</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="resume-ai-extractor" href="#"><span className="material-symbols-outlined text-[18px]">document_scanner</span><span className="font-label-md text-label-md">Resume AI Extractor</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="skill-assessments" href="#"><span className="material-symbols-outlined text-[18px]">quiz</span><span className="font-label-md text-label-md">Skill Assessments</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="skill-gap-analysis" href="#"><span className="material-symbols-outlined text-[18px]">troubleshoot</span><span className="font-label-md text-label-md">Skill-Gap Analysis</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="personalized-learning-path" href="#"><span className="material-symbols-outlined text-[18px]">route</span><span className="font-label-md text-label-md">Learning Path</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="opportunity-matcher" href="#"><span className="material-symbols-outlined text-[18px]">hub</span><span className="font-label-md text-label-md">Opportunity Matcher</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="application-tracker" href="#"><span className="material-symbols-outlined text-[18px]">terminal</span><span className="font-label-md text-label-md">Application Tracker</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="career-readiness" href="#"><span className="material-symbols-outlined text-[18px]">speed</span><span className="font-label-md text-label-md">Career Readiness</span></a></nav><nav className="space-y-unit-1" data-active-classes="bg-primary-container text-on-primary-container font-semibold"><div className="px-unit-2 pb-unit-1 flex items-center justify-between"><span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Recruiter Workspace</span><span className="font-code-sm text-code-sm text-secondary font-semibold">LIVE SYNC</span></div><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="jd-extractor-matcher" href="#"><span className="material-symbols-outlined text-[18px]">data_object</span><span className="font-label-md text-label-md">JD Extractor &amp; Matcher</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="candidate-shortlist" href="#"><span className="material-symbols-outlined text-[18px]">fact_check</span><span className="font-label-md text-label-md">Candidate Shortlist</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="industry-programs" href="#"><span className="material-symbols-outlined text-[18px]">handshake</span><span className="font-label-md text-label-md">Industry Programs</span></a></nav><nav className="space-y-unit-1" data-active-classes="bg-primary-container text-on-primary-container font-semibold"><div className="px-unit-2 pb-unit-1 flex items-center justify-between"><span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">Institution Admin</span><span className="font-code-sm text-code-sm text-primary">ANALYTICS</span></div><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="institution-skill-gap-analytics" href="#"><span className="material-symbols-outlined text-[18px]">analytics</span><span className="font-label-md text-label-md">Skill Gap Analytics</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="demand-vs-readiness" href="#"><span className="material-symbols-outlined text-[18px]">compare_arrows</span><span className="font-label-md text-label-md">Demand vs Readiness</span></a><a className="flex items-center gap-unit-3 px-unit-3 py-unit-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="training-planning" href="#"><span className="material-symbols-outlined text-[18px]">calendar_month</span><span className="font-label-md text-label-md">Training Planning</span></a></nav></div><div className="p-unit-3 border-t border-outline-variant bg-surface-container-low"><div className="flex items-center justify-between"><div className="flex items-center gap-unit-2"><span className="w-2 h-2 bg-secondary"></span><span className="font-code-sm text-code-sm text-on-surface font-semibold">XAI Engine v4.8</span></div><span className="font-code-sm text-code-sm text-on-surface-variant">99.4% VERIFIED</span></div></div></aside><div className="pl-72"><header className="fixed top-0 left-72 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant z-30 flex items-center justify-between px-unit-6"><div className="flex items-center gap-unit-4 flex-1 max-w-lg"><div className="relative w-full"><span className="material-symbols-outlined absolute left-unit-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span><input className="w-full bg-surface-container-low border border-outline-variant pl-9 pr-unit-3 py-1.5 font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary" placeholder="Query by CIP Code, Skill ID, Roll Number, or JD Schema..." type="text"/></div></div><div className="flex items-center gap-unit-4"><div className="hidden lg:flex items-center border border-outline-variant bg-surface-container-low"><span className="font-label-sm text-label-sm px-unit-2 py-1 uppercase text-on-surface-variant border-r border-outline-variant">View As:</span><button className="px-unit-3 py-1 font-label-md text-label-md bg-primary text-on-primary font-semibold" type="button">Student</button><button className="px-unit-3 py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button">Recruiter</button><button className="px-unit-3 py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" type="button">Institution</button></div><button className="relative p-unit-2 text-on-surface-variant hover:text-on-surface border border-outline-variant bg-surface-container-lowest" type="button"><span className="material-symbols-outlined text-[20px] block">notifications</span><span className="absolute top-1 right-1 w-2 h-2 bg-error"></span></button><div className="flex items-center gap-unit-3 pl-unit-2 border-l border-outline-variant"><div className="flex flex-col text-right hidden sm:block"><span className="font-label-md text-label-md text-on-surface font-semibold leading-none">Aarav V. Sharma</span><span className="font-code-sm text-code-sm text-on-surface-variant leading-tight">B.Tech CSE • 8th Sem</span></div><div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span className="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main className="relative pt-16 pb-12 w-full px-unit-6 bg-surface min-h-screen"><div className="flex flex-col w-full">
@@ -156,7 +217,7 @@ function CompetencyHub() {
 </div>
 </div>
 
-<div className="w-full bg-gradient-to-r from-primary via-primary-container to-surface-container-highest p-unit-4 text-on-primary shadow-md mb-unit-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-unit-4">
+{bannerOpen && (<div className="w-full bg-gradient-to-r from-primary via-primary-container to-surface-container-highest p-unit-4 text-on-primary shadow-md mb-unit-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-unit-4">
 <div className="flex items-center gap-unit-3">
 <div className="w-10 h-10 bg-secondary flex items-center justify-center flex-shrink-0 text-on-secondary">
 <span className="material-symbols-outlined text-[24px]">bolt</span>
@@ -172,14 +233,14 @@ function CompetencyHub() {
 </div>
 </div>
 <div className="flex items-center gap-unit-3 flex-shrink-0 w-full md:w-auto">
-<button className="px-unit-4 py-unit-2 bg-secondary text-on-secondary font-label-md text-label-md font-bold uppercase tracking-wider hover:opacity-90 transition-opacity w-full md:w-auto text-center">
+<button type="button" onClick={() => alert("Starting PyTorch Diagnostic Protocol SIH-TEST-PT4")} className="px-unit-4 py-unit-2 bg-secondary text-on-secondary font-label-md text-label-md font-bold uppercase tracking-wider hover:opacity-90 transition-opacity w-full md:w-auto text-center">
         Launch Assessment
       </button>
-<button className="p-unit-2 text-on-primary-container hover:text-on-primary">
+<button type="button" onClick={() => setBannerOpen(false)} className="p-unit-2 text-on-primary-container hover:text-on-primary">
 <span className="material-symbols-outlined text-[20px]">close</span>
 </button>
 </div>
-</div>
+</div>)}
 
 <div className="grid grid-cols-1 lg:grid-cols-12 gap-unit-6 mb-unit-6">
 
@@ -194,12 +255,12 @@ function CompetencyHub() {
 <h2 className="font-headline-md text-headline-md text-on-surface">Skill Verification Matrix &amp; Radar</h2>
 </div>
 <div className="flex items-center bg-surface-container-low p-0.5">
-<button className="px-unit-3 py-1 font-label-md text-label-md bg-surface-container-lowest text-primary font-semibold shadow-xs" id="viewBarBtn">Vector Bars</button>
-<button className="px-unit-3 py-1 font-label-md text-label-md text-on-surface-variant hover:text-on-surface" id="viewRadarBtn">Radar Canvas</button>
+<button type="button" onClick={() => setView("bars")} className={viewBtn("bars")}>Vector Bars</button>
+<button type="button" onClick={() => setView("radar")} className={viewBtn("radar")}>Radar Canvas</button>
 </div>
 </div>
 
-<div className="hidden py-unit-6 flex flex-col items-center justify-center" id="radarContainer">
+<div className={`${view === "radar" ? "flex" : "hidden"} py-unit-6 flex-col items-center justify-center`}>
 <div className="relative w-72 h-72">
 <svg className="w-full h-full" viewBox="0 0 240 240">
 
@@ -238,7 +299,7 @@ function CompetencyHub() {
 </div>
 </div>
 
-<div className="divide-y divide-surface-container-high" id="barContainer">
+<div className={`divide-y divide-surface-container-high ${view === "bars" ? "" : "hidden"}`}>
 
 <div className="py-unit-4">
 <div className="flex items-center justify-between mb-unit-3">
@@ -475,13 +536,13 @@ function CompetencyHub() {
 <h2 className="font-headline-sm text-headline-sm text-on-surface">Target Role Skill-Gap Breakdown</h2>
 
 <div className="grid grid-cols-3 gap-1 bg-surface-container-low p-1 mt-unit-2">
-<button className="px-unit-2 py-1.5 font-label-sm text-label-sm bg-primary text-on-primary font-bold shadow-xs truncate" id="roleBtnML">
+<button type="button" onClick={() => setRole("ml")} className={roleBtn("ml")}>
               ML Engineer Intern
             </button>
-<button className="px-unit-2 py-1.5 font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface font-semibold truncate" id="roleBtnFS">
+<button type="button" onClick={() => setRole("fs")} className={roleBtn("fs")}>
               Full Stack Dev
             </button>
-<button className="px-unit-2 py-1.5 font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface font-semibold truncate" id="roleBtnDA">
+<button type="button" onClick={() => setRole("da")} className={roleBtn("da")}>
               Data Analyst
             </button>
 </div>
@@ -490,11 +551,11 @@ function CompetencyHub() {
 <div className="my-unit-4 p-unit-3 bg-surface-container-low flex items-center justify-between" id="roleContextCard">
 <div className="flex flex-col">
 <span className="font-code-sm text-code-sm text-on-surface-variant">ACTIVE PROFILE BENCHMARK</span>
-<span className="font-headline-sm text-headline-sm text-primary font-bold" id="roleTitleLabel">ML Engineer Intern</span>
+<span className="font-headline-sm text-headline-sm text-primary font-bold">{active.title}</span>
 </div>
 <div className="text-right">
 <span className="font-code-sm text-code-sm text-on-surface-variant">CALCULATED FIT</span>
-<span className="font-headline-md text-headline-md text-secondary font-bold block" id="roleFitScore">88%</span>
+<span className="font-headline-md text-headline-md text-secondary font-bold block">{active.fit}</span>
 </div>
 </div>
 
@@ -508,8 +569,20 @@ function CompetencyHub() {
 <th className="py-unit-2 px-unit-3 text-right">Priority</th>
 </tr>
 </thead>
-<tbody className="divide-y divide-surface-container-high font-body-sm text-body-sm" id="gapTableBody">
-
+<tbody className="divide-y divide-surface-container-high font-body-sm text-body-sm">
+{active.skills.map((skill) => (
+  <tr key={skill.name} className="hover:bg-surface-container-low transition-colors">
+    <td className="py-unit-2 px-unit-3">
+      <span className="font-bold text-on-surface">{skill.name}</span>
+      <span className="block text-[10px] text-on-surface-variant uppercase">{skill.status}</span>
+    </td>
+    <td className="py-unit-2 px-unit-2 text-center font-code-sm font-semibold">{skill.cur}</td>
+    <td className="py-unit-2 px-unit-2 text-center font-code-sm text-on-surface-variant">{skill.req}</td>
+    <td className="py-unit-2 px-unit-3 text-right">
+      <span className={`font-label-sm text-label-sm px-unit-2 py-0.5 font-bold uppercase ${skill.priorityColor}`}>{skill.priority}</span>
+    </td>
+  </tr>
+))}
 </tbody>
 </table>
 </div>
@@ -602,15 +675,15 @@ function CompetencyHub() {
 
 <div className="mt-unit-6 pt-unit-4 border-t border-surface-container-high flex items-center justify-between gap-unit-3">
 <div className="flex items-center gap-unit-2">
-<button className="px-unit-3 py-unit-2 bg-surface-container text-on-surface hover:bg-surface-container-highest font-label-md text-label-md font-semibold flex items-center gap-1">
+<button type="button" onClick={() => setModal({ company: "TensorFlow Labs", role: "ML Research Intern", score: 88, explanation: "Strong match on Python and verified CNN repo. Minor syllabus gap in PyTorch ops." })} className="px-unit-3 py-unit-2 bg-surface-container text-on-surface hover:bg-surface-container-highest font-label-md text-label-md font-semibold flex items-center gap-1">
 <span className="material-symbols-outlined text-[16px]">visibility</span>
 <span>Match Breakdown</span>
 </button>
-<button className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
-<span className="material-symbols-outlined text-[20px]">bookmark_border</span>
+<button type="button" onClick={() => setSaved((p) => ({ ...p, tfl: !p.tfl }))} className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
+<span className={`material-symbols-outlined text-[20px] ${saved.tfl ? "text-primary" : ""}`}>{saved.tfl ? "bookmark" : "bookmark_border"}</span>
 </button>
 </div>
-<button className="px-unit-4 py-unit-2 bg-primary text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider hover:bg-primary-container flex items-center gap-unit-2 shadow-xs">
+<button type="button" onClick={() => alert("Application submitted via SkillBridge Direct-Verify API to TensorFlow Labs.")} className="px-unit-4 py-unit-2 bg-primary text-on-primary font-label-md text-label-md font-bold uppercase tracking-wider hover:bg-primary-container flex items-center gap-unit-2 shadow-xs">
 <span>Apply Now</span>
 <span className="material-symbols-outlined text-[16px]">send</span>
 </button>
@@ -667,15 +740,15 @@ function CompetencyHub() {
 
 <div className="mt-unit-6 pt-unit-4 border-t border-surface-container-high flex items-center justify-between gap-unit-3">
 <div className="flex items-center gap-unit-2">
-<button className="px-unit-3 py-unit-2 bg-surface-container text-on-surface hover:bg-surface-container-highest font-label-md text-label-md font-semibold flex items-center gap-1">
+<button type="button" onClick={() => setModal({ company: "DataPulse Analytics", role: "Python Data Engineer Intern", score: 95, explanation: "Zero critical skill gaps. Both SQL and Python verified through proctored benchmarks and code artifacts." })} className="px-unit-3 py-unit-2 bg-surface-container text-on-surface hover:bg-surface-container-highest font-label-md text-label-md font-semibold flex items-center gap-1">
 <span className="material-symbols-outlined text-[16px]">visibility</span>
 <span>Match Breakdown</span>
 </button>
-<button className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
-<span className="material-symbols-outlined text-[20px]">bookmark_border</span>
+<button type="button" onClick={() => setSaved((p) => ({ ...p, dpa: !p.dpa }))} className="p-unit-2 text-on-surface-variant hover:text-primary bg-surface-container hover:bg-surface-container-highest">
+<span className={`material-symbols-outlined text-[20px] ${saved.dpa ? "text-primary" : ""}`}>{saved.dpa ? "bookmark" : "bookmark_border"}</span>
 </button>
 </div>
-<button className="px-unit-4 py-unit-2 bg-secondary text-on-secondary font-label-md text-label-md font-bold uppercase tracking-wider hover:opacity-90 flex items-center gap-unit-2 shadow-xs">
+<button type="button" onClick={() => alert("Instant candidate fast-track dispatch triggered for DataPulse Analytics.")} className="px-unit-4 py-unit-2 bg-secondary text-on-secondary font-label-md text-label-md font-bold uppercase tracking-wider hover:opacity-90 flex items-center gap-unit-2 shadow-xs">
 <span>Fast-Track Apply</span>
 <span className="material-symbols-outlined text-[16px]">bolt</span>
 </button>
@@ -684,28 +757,26 @@ function CompetencyHub() {
 </div>
 </div>
 
-<div className="fixed inset-0 bg-on-surface/50 backdrop-blur-xs z-50 hidden flex items-center justify-center p-unit-4" id="breakdownModal">
+{modal && (<div className="fixed inset-0 bg-on-surface/50 backdrop-blur-xs z-50 flex items-center justify-center p-unit-4">
 <div className="bg-surface-container-lowest max-w-xl w-full p-unit-6 shadow-xl relative">
 <div className="flex items-start justify-between pb-unit-4 border-b border-surface-container-high">
 <div>
 <span className="font-label-sm text-label-sm text-secondary font-bold uppercase">Algorithmic Vector Inspection</span>
-<h3 className="font-headline-md text-headline-md text-on-surface mt-0.5" id="modalRoleTitle">Role Name</h3>
-<span className="font-body-sm text-body-sm text-on-surface-variant" id="modalCompanyName">Company</span>
+<h3 className="font-headline-md text-headline-md text-on-surface mt-0.5">{modal.role}</h3>
+<span className="font-body-sm text-body-sm text-on-surface-variant">{modal.company}</span>
 </div>
-<button className="p-unit-1 text-on-surface-variant hover:text-on-surface">
+<button type="button" onClick={() => setModal(null)} className="p-unit-1 text-on-surface-variant hover:text-on-surface">
 <span className="material-symbols-outlined text-[22px]">close</span>
 </button>
 </div>
 <div className="py-unit-4 space-y-unit-4">
 <div className="flex items-center justify-between bg-surface-container-low p-unit-3">
 <span className="font-label-md text-label-md text-on-surface font-semibold">Calculated Semantic Fit</span>
-<span className="font-headline-sm text-headline-sm text-secondary font-bold" id="modalScore">88%</span>
+<span className="font-headline-sm text-headline-sm text-secondary font-bold">{modal.score}%</span>
 </div>
 <div>
 <h4 className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-unit-1">Match Reason Synthesis</h4>
-<p className="font-body-md text-body-md text-on-surface bg-surface-container-lowest p-unit-3 border border-surface-container-high" id="modalExplanation">
-            Detailed text
-          </p>
+<p className="font-body-md text-body-md text-on-surface bg-surface-container-lowest p-unit-3 border border-surface-container-high">{modal.explanation}</p>
 </div>
 <div>
 <h4 className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant mb-unit-2">Evaluated Competency Weights</h4>
