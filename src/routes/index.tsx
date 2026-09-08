@@ -800,15 +800,15 @@ function CompetencyHub() {
 </div>
 </div>
 <div className="pt-unit-4 border-t border-surface-container-high flex justify-end gap-unit-3">
-<button className="px-unit-4 py-unit-2 bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-highest">
+<button type="button" onClick={() => setModal(null)} className="px-unit-4 py-unit-2 bg-surface-container text-on-surface font-label-md text-label-md hover:bg-surface-container-highest">
           Close Inspection
         </button>
-<button className="px-unit-4 py-unit-2 bg-primary text-on-primary font-label-md text-label-md font-bold">
+<button type="button" onClick={() => { alert("Target study plan synced to your dashboard."); setModal(null); }} className="px-unit-4 py-unit-2 bg-primary text-on-primary font-label-md text-label-md font-bold">
           Bridge Identified Gaps
         </button>
 </div>
 </div>
-</div>
+</div>)}
 </div>
 
 </main></div><footer className="fixed bottom-0 left-0 right-0 h-8 bg-surface-container-high border-t border-outline-variant z-50 px-unit-4 flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm"><div><span className="inline-block w-2 h-2 bg-secondary mr-2"></span><span>Smart Automation • SIH2026 Active Demo</span></div><div className="flex items-center gap-unit-6"><span>API LATENCY: 18ms</span><span>CIP TAXONOMY: 2020-NCES</span><span>INSTANCE: IN-DL-CLUSTER-04</span></div></footer>
