@@ -68,7 +68,7 @@ export function evidenceStrengthLabel(v: number): string {
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
 /** Diminishing-returns curve: many weak items never beat a few verified ones. */
-const curve = (contribution: number) => Math.round(97 * (1 - Math.exp(-contribution / 45)));
+const curve = (contribution: number) => Math.round(97 * (1 - Math.exp(-contribution / 35)));
 
 export function buildCompetencyProfile(
   evidence: Evidence[],
