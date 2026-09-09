@@ -177,6 +177,7 @@ export type Database = {
           posted_by: string | null
           preferred: string[]
           required: Json
+          stipend: string
           title: string
         }
         Insert: {
@@ -190,6 +191,7 @@ export type Database = {
           posted_by?: string | null
           preferred?: string[]
           required?: Json
+          stipend?: string
           title: string
         }
         Update: {
@@ -203,6 +205,7 @@ export type Database = {
           posted_by?: string | null
           preferred?: string[]
           required?: Json
+          stipend?: string
           title?: string
         }
         Relationships: []
