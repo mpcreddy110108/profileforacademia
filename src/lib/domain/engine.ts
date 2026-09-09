@@ -50,13 +50,54 @@ const VERIFICATION_BONUS: Record<VerificationStatus, number> = {
   "institution-verified": 26,
 };
 
+/** -10..+6 based on how recent the work is. */
+export function recencyAdjustment(e: Evidence): number {
+  const when = Date.parse(e.occurredOn ?? e.createdAt);
+  if (Number.isNaN(when)) return 0;
+  const months = (Date.now() - when) / (1000 * 60 * 60 * 24 * 30.44);
+  if (months <= 6) return 6;
+  if (months <= 12) return 3;
+  if (months <= 24) return -3;
+  return -10;
+}
+
 /** 0-100 quality score of a single evidence item. */
 export function evidenceStrength(e: Evidence): number {
   const detail = Math.min(12, Math.round(e.description.trim().length / 25));
   const breadth = Math.min(6, e.skills.length * 2);
+  const outcome = e.outcome && e.outcome.trim().length > 8 ? 5 : 0;
+  const link = e.url || e.filePath ? 4 : 0;
   const scoreBoost = e.type === "assessment" && e.score != null ? Math.round((e.score - 60) / 4) : 0;
-  return clamp(TYPE_BASE_STRENGTH[e.type] + VERIFICATION_BONUS[e.verification] + detail + breadth + scoreBoost, 5, 100);
+  return clamp(
+    TYPE_BASE_STRENGTH[e.type] +
+      VERIFICATION_BONUS[e.verification] +
+      detail +
+      breadth +
+      outcome +
+      link +
+      recencyAdjustment(e) +
+      scoreBoost,
+    5,
+    100,
+  );
 }
+
+/** Human-readable breakdown of an evidence strength score. */
+export function evidenceStrengthBreakdown(e: Evidence): { label: string; value: number }[] {
+  return [
+    { label: `${e.type} base`, value: TYPE_BASE_STRENGTH[e.type] },
+    { label: `${e.verification} verification`, value: VERIFICATION_BONUS[e.verification] },
+    { label: "description depth", value: Math.min(12, Math.round(e.description.trim().length / 25)) },
+    { label: "skills covered", value: Math.min(6, e.skills.length * 2) },
+    { label: "stated outcome", value: e.outcome && e.outcome.trim().length > 8 ? 5 : 0 },
+    { label: "link or uploaded file", value: e.url || e.filePath ? 4 : 0 },
+    { label: "recency", value: recencyAdjustment(e) },
+    ...(e.type === "assessment" && e.score != null
+      ? [{ label: "assessment score", value: Math.round((e.score - 60) / 4) }]
+      : []),
+  ];
+}
+
 
 export function evidenceStrengthLabel(v: number): string {
   if (v >= 80) return "Very strong";

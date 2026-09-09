@@ -12,10 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApplicationsRouteImport } from './routes/applications'
 import { Route as AssessmentsRouteImport } from './routes/assessments'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EvidenceRouteImport } from './routes/evidence'
 import { Route as InstitutionRouteImport } from './routes/institution'
 import { Route as LearningPathRouteImport } from './routes/learning-path'
+import { Route as MentorRouteImport } from './routes/mentor'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as OpportunitiesRouteImport } from './routes/opportunities'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReadinessRouteImport } from './routes/readiness'
 import { Route as ResumeExtractorRouteImport } from './routes/resume-extractor'
 import { Route as SkillGapRouteImport } from './routes/skill-gap'
@@ -37,6 +41,11 @@ const AssessmentsRoute = AssessmentsRouteImport.update({
   path: '/assessments',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EvidenceRoute = EvidenceRouteImport.update({
   id: '/evidence',
   path: '/evidence',
@@ -52,9 +61,24 @@ const LearningPathRoute = LearningPathRouteImport.update({
   path: '/learning-path',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MentorRoute = MentorRouteImport.update({
+  id: '/mentor',
+  path: '/mentor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesRoute = OpportunitiesRouteImport.update({
   id: '/opportunities',
   path: '/opportunities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReadinessRoute = ReadinessRouteImport.update({
@@ -87,10 +111,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/applications': typeof ApplicationsRoute
   '/assessments': typeof AssessmentsRoute
+  '/auth': typeof AuthRoute
   '/evidence': typeof EvidenceRoute
   '/institution': typeof InstitutionRoute
   '/learning-path': typeof LearningPathRoute
+  '/mentor': typeof MentorRoute
+  '/onboarding': typeof OnboardingRoute
   '/opportunities': typeof OpportunitiesRoute
+  '/privacy': typeof PrivacyRoute
   '/readiness': typeof ReadinessRoute
   '/resume-extractor': typeof ResumeExtractorRoute
   '/skill-gap': typeof SkillGapRoute
@@ -101,10 +129,14 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/applications': typeof ApplicationsRoute
   '/assessments': typeof AssessmentsRoute
+  '/auth': typeof AuthRoute
   '/evidence': typeof EvidenceRoute
   '/institution': typeof InstitutionRoute
   '/learning-path': typeof LearningPathRoute
+  '/mentor': typeof MentorRoute
+  '/onboarding': typeof OnboardingRoute
   '/opportunities': typeof OpportunitiesRoute
+  '/privacy': typeof PrivacyRoute
   '/readiness': typeof ReadinessRoute
   '/resume-extractor': typeof ResumeExtractorRoute
   '/skill-gap': typeof SkillGapRoute
@@ -116,10 +148,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/applications': typeof ApplicationsRoute
   '/assessments': typeof AssessmentsRoute
+  '/auth': typeof AuthRoute
   '/evidence': typeof EvidenceRoute
   '/institution': typeof InstitutionRoute
   '/learning-path': typeof LearningPathRoute
+  '/mentor': typeof MentorRoute
+  '/onboarding': typeof OnboardingRoute
   '/opportunities': typeof OpportunitiesRoute
+  '/privacy': typeof PrivacyRoute
   '/readiness': typeof ReadinessRoute
   '/resume-extractor': typeof ResumeExtractorRoute
   '/skill-gap': typeof SkillGapRoute
@@ -132,10 +168,14 @@ export interface FileRouteTypes {
     | '/'
     | '/applications'
     | '/assessments'
+    | '/auth'
     | '/evidence'
     | '/institution'
     | '/learning-path'
+    | '/mentor'
+    | '/onboarding'
     | '/opportunities'
+    | '/privacy'
     | '/readiness'
     | '/resume-extractor'
     | '/skill-gap'
@@ -146,10 +186,14 @@ export interface FileRouteTypes {
     | '/'
     | '/applications'
     | '/assessments'
+    | '/auth'
     | '/evidence'
     | '/institution'
     | '/learning-path'
+    | '/mentor'
+    | '/onboarding'
     | '/opportunities'
+    | '/privacy'
     | '/readiness'
     | '/resume-extractor'
     | '/skill-gap'
@@ -160,10 +204,14 @@ export interface FileRouteTypes {
     | '/'
     | '/applications'
     | '/assessments'
+    | '/auth'
     | '/evidence'
     | '/institution'
     | '/learning-path'
+    | '/mentor'
+    | '/onboarding'
     | '/opportunities'
+    | '/privacy'
     | '/readiness'
     | '/resume-extractor'
     | '/skill-gap'
@@ -175,10 +223,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApplicationsRoute: typeof ApplicationsRoute
   AssessmentsRoute: typeof AssessmentsRoute
+  AuthRoute: typeof AuthRoute
   EvidenceRoute: typeof EvidenceRoute
   InstitutionRoute: typeof InstitutionRoute
   LearningPathRoute: typeof LearningPathRoute
+  MentorRoute: typeof MentorRoute
+  OnboardingRoute: typeof OnboardingRoute
   OpportunitiesRoute: typeof OpportunitiesRoute
+  PrivacyRoute: typeof PrivacyRoute
   ReadinessRoute: typeof ReadinessRoute
   ResumeExtractorRoute: typeof ResumeExtractorRoute
   SkillGapRoute: typeof SkillGapRoute
@@ -209,6 +261,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssessmentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/evidence': {
       id: '/evidence'
       path: '/evidence'
@@ -230,11 +289,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearningPathRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mentor': {
+      id: '/mentor'
+      path: '/mentor'
+      fullPath: '/mentor'
+      preLoaderRoute: typeof MentorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities': {
       id: '/opportunities'
       path: '/opportunities'
       fullPath: '/opportunities'
       preLoaderRoute: typeof OpportunitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/readiness': {
@@ -279,10 +359,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApplicationsRoute: ApplicationsRoute,
   AssessmentsRoute: AssessmentsRoute,
+  AuthRoute: AuthRoute,
   EvidenceRoute: EvidenceRoute,
   InstitutionRoute: InstitutionRoute,
   LearningPathRoute: LearningPathRoute,
+  MentorRoute: MentorRoute,
+  OnboardingRoute: OnboardingRoute,
   OpportunitiesRoute: OpportunitiesRoute,
+  PrivacyRoute: PrivacyRoute,
   ReadinessRoute: ReadinessRoute,
   ResumeExtractorRoute: ResumeExtractorRoute,
   SkillGapRoute: SkillGapRoute,

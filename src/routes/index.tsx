@@ -3,7 +3,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Bar, Chip, Explain, Panel, Stat } from "@/components/ui-kit";
 import { ROLES, roleById, skillById, skillName } from "@/lib/domain/catalog";
-import { STUDENT } from "@/lib/domain/seed";
 import { useStore } from "@/lib/store";
 import type { Competency } from "@/lib/domain/types";
 
@@ -32,7 +31,7 @@ const WORKFLOW = [
 ] as const;
 
 function CompetencyHub() {
-  const { profile, fit, state, setTargetRole, readiness } = useStore();
+  const { profile, fit, state, setTargetRole, readiness, student } = useStore();
   const role = roleById(state.targetRoleId);
 
   const strong = profile.filter((c) => c.level === "strong");
@@ -46,17 +45,17 @@ function CompetencyHub() {
       <div className="bg-surface-container-lowest border border-outline-variant p-unit-6 mb-unit-6">
         <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-unit-6">
           <div className="flex items-start gap-unit-6">
-            <div className="w-20 h-20 bg-surface-container-high overflow-hidden flex-shrink-0">
-              <img className="w-full h-full object-cover" src={STUDENT.photo} alt={`Portrait of ${STUDENT.name}`} />
+            <div className="w-20 h-20 bg-primary text-on-primary flex items-center justify-center flex-shrink-0 font-headline-md text-headline-md">
+              {(student?.fullName || "You").slice(0, 2).toUpperCase()}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-unit-3">
-                <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">{STUDENT.name}</h1>
-                <Chip>UID: {STUDENT.uid}</Chip>
-                <Chip tone="info">{STUDENT.institution}</Chip>
+                <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">{student?.fullName || "Your profile"}</h1>
+                <Chip>{student?.branch || "Branch not set"}</Chip>
+                <Chip tone="info">{student?.college || "College not set"}</Chip>
               </div>
               <p className="font-body-md text-body-md text-on-surface-variant mt-1">
-                {STUDENT.program} • {STUDENT.semester} • Specialisation: {STUDENT.specialisation}
+                {student?.degree || "Degree not set"} • {student?.semester || "Semester not set"} • Specialisation: {student?.specialisation || "not set"}
               </p>
               <div className="flex flex-wrap items-center gap-unit-4 mt-unit-2 text-on-surface-variant">
                 <span className="font-code-sm text-code-sm">
