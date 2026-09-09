@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EvidenceRouteImport } from './routes/evidence'
 import { Route as InstitutionRouteImport } from './routes/institution'
 import { Route as LearningPathRouteImport } from './routes/learning-path'
+import { Route as MentorRouteImport } from './routes/mentor'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -58,6 +59,11 @@ const InstitutionRoute = InstitutionRouteImport.update({
 const LearningPathRoute = LearningPathRouteImport.update({
   id: '/learning-path',
   path: '/learning-path',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentorRoute = MentorRouteImport.update({
+  id: '/mentor',
+  path: '/mentor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/evidence': typeof EvidenceRoute
   '/institution': typeof InstitutionRoute
   '/learning-path': typeof LearningPathRoute
+  '/mentor': typeof MentorRoute
   '/onboarding': typeof OnboardingRoute
   '/opportunities': typeof OpportunitiesRoute
   '/privacy': typeof PrivacyRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/evidence': typeof EvidenceRoute
   '/institution': typeof InstitutionRoute
   '/learning-path': typeof LearningPathRoute
+  '/mentor': typeof MentorRoute
   '/onboarding': typeof OnboardingRoute
   '/opportunities': typeof OpportunitiesRoute
   '/privacy': typeof PrivacyRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/evidence': typeof EvidenceRoute
   '/institution': typeof InstitutionRoute
   '/learning-path': typeof LearningPathRoute
+  '/mentor': typeof MentorRoute
   '/onboarding': typeof OnboardingRoute
   '/opportunities': typeof OpportunitiesRoute
   '/privacy': typeof PrivacyRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/evidence'
     | '/institution'
     | '/learning-path'
+    | '/mentor'
     | '/onboarding'
     | '/opportunities'
     | '/privacy'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/evidence'
     | '/institution'
     | '/learning-path'
+    | '/mentor'
     | '/onboarding'
     | '/opportunities'
     | '/privacy'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/evidence'
     | '/institution'
     | '/learning-path'
+    | '/mentor'
     | '/onboarding'
     | '/opportunities'
     | '/privacy'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   EvidenceRoute: typeof EvidenceRoute
   InstitutionRoute: typeof InstitutionRoute
   LearningPathRoute: typeof LearningPathRoute
+  MentorRoute: typeof MentorRoute
   OnboardingRoute: typeof OnboardingRoute
   OpportunitiesRoute: typeof OpportunitiesRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/learning-path'
       fullPath: '/learning-path'
       preLoaderRoute: typeof LearningPathRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentor': {
+      id: '/mentor'
+      path: '/mentor'
+      fullPath: '/mentor'
+      preLoaderRoute: typeof MentorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   EvidenceRoute: EvidenceRoute,
   InstitutionRoute: InstitutionRoute,
   LearningPathRoute: LearningPathRoute,
+  MentorRoute: MentorRoute,
   OnboardingRoute: OnboardingRoute,
   OpportunitiesRoute: OpportunitiesRoute,
   PrivacyRoute: PrivacyRoute,
