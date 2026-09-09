@@ -38,6 +38,27 @@ function ResumeExtractor() {
   const [results, setResults] = useState<{ skill: string; matchedTerm: string }[] | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const [saved, setSaved] = useState<string | null>(null);
+  const [pdfState, setPdfState] = useState<string | null>(null);
+
+  const readPdf = async (file: File) => {
+    setPdfState("Reading PDF…");
+    try {
+      const pdfjs = await import("pdfjs-dist");
+      const worker = await import("pdfjs-dist/build/pdf.worker.mjs?url");
+      pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+      const doc = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
+      let out = "";
+      for (let i = 1; i <= doc.numPages; i += 1) {
+        const page = await doc.getPage(i);
+        const content = await page.getTextContent();
+        out += content.items.map((it) => ("str" in it ? it.str : "")).join(" ") + "\n";
+      }
+      setText(out.trim());
+      setPdfState(`Read ${doc.numPages} page(s) in your browser — the file itself is not uploaded.`);
+    } catch {
+      setPdfState("Could not read that PDF. Paste the text instead.");
+    }
+  };
 
   const run = () => {
     const found = extractSkillsFromText(text);
@@ -70,6 +91,22 @@ function ResumeExtractor() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-unit-4">
         <Panel title="Resume text" subtitle="Paste plain text — no file is uploaded anywhere in this demo">
           <textarea className={`${inputCls} h-72 font-code-sm`} value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste your resume here…" />
+          <div className="mt-unit-3">
+            <label className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" htmlFor="pdf">
+              Or upload a PDF resume
+            </label>
+            <input
+              id="pdf"
+              type="file"
+              accept="application/pdf"
+              className={inputCls}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) void readPdf(file);
+              }}
+            />
+            {pdfState && <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">{pdfState}</p>}
+          </div>
           <div className="flex flex-wrap gap-unit-2 mt-unit-3">
             <button type="button" className={btnPrimary} onClick={run} disabled={!text.trim()}>
               <span className="material-symbols-outlined text-[18px]">document_scanner</span> Extract skills
