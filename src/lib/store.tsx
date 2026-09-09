@@ -52,12 +52,12 @@ type Ctx = {
   error: string | null;
   session: Session | null;
   userId: string | null;
-  profile: StudentProfile | null;
+  student: StudentProfile | null;
   role: AppRole;
   reviews: EvidenceReview[];
+  /** Competency scores (kept as `profile` for existing pages). */
+  profile: Competency[];
   competencies: Competency[];
-  /** Alias kept for existing pages. */
-  profileScores: Competency[];
   fit: RoleFit;
   learningPath: LearningStep[];
   opportunities: Opportunity[];
@@ -79,6 +79,7 @@ type Ctx = {
   toggleShortlist: (opportunityId: string, studentId: string) => Promise<void>;
   loadDemoEvidence: () => Promise<void>;
   clearMyData: () => Promise<void>;
+  resetDemo: () => Promise<void>;
   exportMyData: () => void;
   signOut: () => Promise<void>;
 };
@@ -276,7 +277,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           skill: r.skill as SkillId,
           completedAt: r.completed_at.slice(0, 10),
         })),
-        applications: ((appsRes.data ?? []) as {
+        applications: ((appsRes.data ?? []) as unknown as {
           id: string;
           opportunity_id: string;
           status: ApplicationStatus;
@@ -361,7 +362,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const updateEvidence = useCallback(
     async (id: string, patch: Partial<EvidenceInput>) => {
-      const { error: err } = await supabase.from("evidence").update(evidencePatchToRow(patch)).eq("id", id);
+      const { error: err } = await supabase.from("evidence").update(evidencePatchToRow(patch) as never).eq("id", id);
       if (err) throw err;
       await load(userId);
     },
@@ -396,7 +397,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const updateProfile = useCallback(
     async (patch: Partial<StudentProfile>) => {
       if (!userId) return;
-      const { error: err } = await supabase.from("profiles").update(profilePatchToRow(patch)).eq("id", userId);
+      const { error: err } = await supabase.from("profiles").update(profilePatchToRow(patch) as never).eq("id", userId);
       if (err) throw err;
       await load(userId);
     },
@@ -568,11 +569,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     error,
     session,
     userId,
-    profile,
+    student: profile,
     role,
     reviews,
+    profile: competencies,
     competencies,
-    profileScores: competencies,
     fit,
     learningPath,
     opportunities,
@@ -594,6 +595,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     toggleShortlist,
     loadDemoEvidence,
     clearMyData,
+    resetDemo: clearMyData,
     exportMyData,
     signOut,
   };
