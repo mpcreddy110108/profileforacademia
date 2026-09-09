@@ -4,6 +4,8 @@ export type EvidenceType = "project" | "certification" | "internship" | "resume"
 
 export type VerificationStatus = "self-reported" | "peer-reviewed" | "institution-verified";
 
+export type EvidenceSource = "manual" | "resume-extractor" | "assessment" | "learning-path" | "demo-seed";
+
 export type Evidence = {
   id: string;
   type: EvidenceType;
@@ -14,8 +16,48 @@ export type Evidence = {
   /** Only for assessment evidence: 0-100 score from a taken quiz. */
   score?: number | undefined;
   createdAt: string;
-  source?: undefined | "manual" | "resume-extractor" | "assessment" | "learning-path";
+  source?: undefined | EvidenceSource;
+  /** Measurable outcome of the work (accuracy, users, marks…). */
+  outcome?: string | undefined;
+  /** Public link: repo, certificate, deployment. */
+  url?: string | undefined;
+  /** When the work happened (YYYY-MM-DD). Drives recency in scoring. */
+  occurredOn?: string | undefined;
+  /** Storage path of an uploaded supporting file. */
+  filePath?: string | undefined;
+  isDemo?: boolean | undefined;
 };
+
+export type EvidenceReview = {
+  id: string;
+  evidenceId: string;
+  action: "approved" | "rejected" | "changes-requested";
+  comment: string;
+  createdAt: string;
+};
+
+export type StudentProfile = {
+  id: string;
+  fullName: string;
+  college: string;
+  degree: string;
+  branch: string;
+  semester: string;
+  specialisation: string;
+  targetRoleId: string;
+  githubUrl: string;
+  linkedinUrl: string;
+  weeklyHours: number;
+  photoUrl: string;
+  onboarded: boolean;
+  isDemo: boolean;
+  visibleToRecruiters: boolean;
+  resumeVisible: boolean;
+  evidenceVisible: boolean;
+  consentedAt: string | null;
+};
+
+export type AppRole = "student" | "recruiter" | "institution" | "mentor";
 
 export type LearningStepState = { skill: SkillId; completedAt: string };
 
