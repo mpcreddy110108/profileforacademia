@@ -49,7 +49,7 @@ const TYPE_MAP: Record<ExtractedItem["type"], EvidenceType> = {
 };
 
 function depthTone(score: number) {
-  return score >= 7 ? "ok" : score >= 5 ? "info" : "warn";
+  return score >= 7 ? ("good" as const) : score >= 5 ? ("info" as const) : ("warn" as const);
 }
 
 function ResumeExtractor() {
