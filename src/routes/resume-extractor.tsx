@@ -1,19 +1,21 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 
 import { AppShell } from "@/components/AppShell";
 import { Chip, Explain, PageHeader, Panel, btnGhost, btnPrimary, inputCls } from "@/components/ui-kit";
 import { skillName } from "@/lib/domain/catalog";
-import { extractSkillsFromText } from "@/lib/domain/engine";
+import type { EvidenceType } from "@/lib/domain/types";
+import { extractResumeEvidence, type ExtractedItem } from "@/lib/resume-extract.functions";
 import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/resume-extractor")({
   head: () => ({
     meta: [
-      { title: "Resume Skill Extractor — SkillBridge AI" },
-      { name: "description", content: "Paste resume text and extract skills against the catalog, then store the result as evidence." },
-      { property: "og:title", content: "Resume Skill Extractor — SkillBridge AI" },
-      { property: "og:description", content: "Transparent keyword extraction that turns resume text into competency evidence." },
+      { title: "AI Resume Skill Extractor — SkillBridge AI" },
+      { name: "description", content: "Upload a PDF or paste resume text and let AI turn it into structured evidence that updates your competency profile." },
+      { property: "og:title", content: "AI Resume Skill Extractor — SkillBridge AI" },
+      { property: "og:description", content: "AI extracts projects, internships and certifications from your resume as reviewable evidence." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -26,19 +28,41 @@ const SAMPLE = `AARAV V. SHARMA — B.Tech CSE (AI), NIT Warangal
 SKILLS: Python, SQL, Pandas, NumPy, scikit-learn, Machine Learning, Docker, Git, Linux, Flask REST APIs, Matplotlib.
 
 EXPERIENCE
-Backend Intern, Aeris Softworks — built Flask REST endpoints, containerised services with Docker, worked on Linux servers.
+Backend Intern, Aeris Softworks (Jun–Aug 2025) — built 12 Flask REST endpoints serving 40k requests/day, containerised services with Docker, deployed on Linux servers.
 
 PROJECTS
-Predictive maintenance with machine learning on sensor data (Pandas, NumPy, scikit-learn).
-Placement analytics dashboard with PostgreSQL and Matplotlib visualization.`;
+Predictive maintenance with machine learning on sensor data (Pandas, NumPy, scikit-learn) — 91% F1 on held-out data.
+Placement analytics dashboard with PostgreSQL and Matplotlib visualization used by 300 students.
+
+CERTIFICATIONS
+DeepLearning.AI Machine Learning Specialization (2025).`;
+
+/** AI item types are richer than the evidence table's five types. */
+const TYPE_MAP: Record<ExtractedItem["type"], EvidenceType> = {
+  project: "project",
+  internship: "internship",
+  course: "certification",
+  certification: "certification",
+  opensource: "project",
+  hackathon: "project",
+  publication: "project",
+};
+
+function depthTone(score: number) {
+  return score >= 7 ? ("good" as const) : score >= 5 ? ("info" as const) : ("warn" as const);
+}
 
 function ResumeExtractor() {
   const { addEvidence } = useStore();
+  const runExtract = useServerFn(extractResumeEvidence);
+
   const [text, setText] = useState("");
-  const [results, setResults] = useState<{ skill: string; matchedTerm: string }[] | null>(null);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [saved, setSaved] = useState<string | null>(null);
   const [pdfState, setPdfState] = useState<string | null>(null);
+  const [busy, setBusy] = useState<null | string>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [items, setItems] = useState<ExtractedItem[] | null>(null);
+  const [included, setIncluded] = useState<Record<number, boolean>>({});
+  const [saved, setSaved] = useState<string | null>(null);
 
   const readPdf = async (file: File) => {
     setPdfState("Reading PDF…");
@@ -60,37 +84,67 @@ function ResumeExtractor() {
     }
   };
 
-  const run = () => {
-    const found = extractSkillsFromText(text);
-    setResults(found);
-    setSelected(found.map((f) => f.skill));
+  const analyse = async () => {
+    setBusy("Analysing your resume with AI…");
+    setError(null);
     setSaved(null);
+    setItems(null);
+    try {
+      const res = await runExtract({ data: { text } });
+      setItems(res.items);
+      setIncluded(Object.fromEntries(res.items.map((_, i) => [i, true])));
+      if (res.items.length === 0) setError("The AI found no clearly evidenced items in this resume.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Extraction failed. Please try again.");
+    } finally {
+      setBusy(null);
+    }
   };
 
-  const save = () => {
-    if (!selected.length) return;
-    addEvidence({
-      type: "resume",
-      title: "Resume upload — extracted skills",
-      description: `Skills extracted from pasted resume text (${text.trim().split(/\s+/).length} words). Extraction is keyword/alias based against the skill catalog.`,
-      skills: selected,
-      verification: "self-reported",
-      source: "resume-extractor",
-    });
-    setSaved(`Stored as resume evidence covering ${selected.map(skillName).join(", ")}. Your competency profile has been recalculated.`);
+  const save = async () => {
+    if (!items) return;
+    const chosen = items.filter((_, i) => included[i]);
+    if (!chosen.length) return;
+    setBusy(`Saving ${chosen.length} evidence item(s)…`);
+    setError(null);
+    try {
+      for (const item of chosen) {
+        await addEvidence({
+          type: TYPE_MAP[item.type],
+          title: item.title,
+          description: `${item.description}\n\n[AI-extracted from resume · reported ${item.type} · depth ${item.depth_score}/10]`,
+          skills: item.skills,
+          verification: "self-reported",
+          source: "resume-extractor",
+        });
+      }
+      setSaved(`${chosen.length} evidence item(s) saved. Your competency scores have been recalculated from the updated portfolio.`);
+      setItems(null);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not save the evidence.");
+    } finally {
+      setBusy(null);
+    }
   };
+
+  const chosenCount = items ? items.filter((_, i) => included[i]).length : 0;
 
   return (
     <AppShell>
       <PageHeader
         eyebrow="Step 3 — Skill extraction"
-        title="Resume AI Extractor"
-        description="Paste your resume text. The extractor matches it against the 21-skill catalog and its aliases, shows you exactly which term triggered each match, and lets you confirm before anything enters your profile."
+        title="AI Resume Extractor"
+        description="Upload a PDF or paste your resume text. AI reads it and proposes structured evidence — projects, internships, certifications — each with the skills it can actually justify and a depth rating. Nothing is saved until you approve it."
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-unit-4">
-        <Panel title="Resume text" subtitle="Paste plain text — no file is uploaded anywhere in this demo">
-          <textarea className={`${inputCls} h-72 font-code-sm`} value={text} onChange={(e) => setText(e.target.value)} placeholder="Paste your resume here…" />
+        <Panel title="Your resume" subtitle="PDF is read in your browser; only the text is sent for analysis">
+          <textarea
+            className={`${inputCls} h-64 font-code-sm`}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Paste your resume here…"
+          />
           <div className="mt-unit-3">
             <label className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant" htmlFor="pdf">
               Or upload a PDF resume
@@ -108,58 +162,105 @@ function ResumeExtractor() {
             {pdfState && <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">{pdfState}</p>}
           </div>
           <div className="flex flex-wrap gap-unit-2 mt-unit-3">
-            <button type="button" className={btnPrimary} onClick={run} disabled={!text.trim()}>
-              <span className="material-symbols-outlined text-[18px]">document_scanner</span> Extract skills
+            <button type="button" className={btnPrimary} onClick={() => void analyse()} disabled={!text.trim() || busy !== null}>
+              <span className="material-symbols-outlined text-[18px]">auto_awesome</span>
+              {busy ? "Working…" : "Extract with AI"}
             </button>
-            <button type="button" className={btnGhost} onClick={() => { setText(SAMPLE); setResults(null); }}>Load sample resume</button>
-            <button type="button" className={btnGhost} onClick={() => { setText(""); setResults(null); }}>Clear</button>
+            <button type="button" className={btnGhost} onClick={() => { setText(SAMPLE); setItems(null); setSaved(null); }}>
+              Load sample resume
+            </button>
+            <button type="button" className={btnGhost} onClick={() => { setText(""); setItems(null); setSaved(null); }}>
+              Clear
+            </button>
           </div>
         </Panel>
 
-        <Panel title="Extraction result" subtitle="Confirm the skills you want to keep">
-          {results === null ? (
-            <p className="font-body-sm text-body-sm text-on-surface-variant">Run the extractor to see matches.</p>
-          ) : results.length === 0 ? (
-            <p className="font-body-sm text-body-sm text-on-surface-variant">No catalog skills matched this text.</p>
-          ) : (
+        <Panel title="Extracted evidence" subtitle="Review and approve before it enters your portfolio">
+          {busy && (
+            <div className="border border-outline-variant px-unit-3 py-unit-4">
+              <div className="flex items-center gap-unit-2">
+                <span className="material-symbols-outlined animate-spin text-[20px] text-primary">progress_activity</span>
+                <span className="font-label-md text-label-md text-on-surface">{busy}</span>
+              </div>
+              <div className="mt-unit-3 space-y-unit-2">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="h-4 bg-surface-variant animate-pulse" style={{ width: `${90 - i * 18}%` }} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!busy && error && (
+            <p className="bg-error-container text-on-error-container px-unit-3 py-unit-2 font-body-sm text-body-sm">{error}</p>
+          )}
+
+          {!busy && saved && (
+            <p className="bg-secondary-container text-on-secondary-container px-unit-3 py-unit-2 font-body-sm text-body-sm">
+              {saved}
+            </p>
+          )}
+
+          {!busy && !items && !saved && !error && (
+            <p className="font-body-sm text-body-sm text-on-surface-variant">
+              Add your resume text, then run the extractor to see proposed evidence items.
+            </p>
+          )}
+
+          {!busy && items && items.length > 0 && (
             <>
-              <ul className="space-y-unit-2">
-                {results.map((r) => {
-                  const on = selected.includes(r.skill);
+              <ul className="space-y-unit-3">
+                {items.map((item, i) => {
+                  const on = !!included[i];
                   return (
-                    <li key={r.skill} className="flex items-center justify-between border border-outline-variant px-unit-3 py-unit-2">
-                      <div>
-                        <span className="font-label-md text-label-md text-on-surface">{skillName(r.skill)}</span>
-                        <p className="font-code-sm text-code-sm text-on-surface-variant">matched on “{r.matchedTerm}”</p>
+                    <li key={`${item.title}-${i}`} className="border border-outline-variant px-unit-3 py-unit-3">
+                      <div className="flex items-start justify-between gap-unit-3">
+                        <div className="min-w-0">
+                          <p className="font-label-md text-label-md text-on-surface break-words">{item.title}</p>
+                          <p className="font-body-sm text-body-sm text-on-surface-variant mt-1 break-words">{item.description}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setIncluded((p) => ({ ...p, [i]: !on }))}
+                          className={
+                            on
+                              ? "shrink-0 px-unit-3 py-1 bg-secondary-container text-on-secondary-container font-label-md text-label-md"
+                              : "shrink-0 px-unit-3 py-1 border border-outline-variant text-on-surface-variant font-label-md text-label-md"
+                          }
+                        >
+                          {on ? "Included" : "Excluded"}
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => setSelected((p) => (on ? p.filter((x) => x !== r.skill) : [...p, r.skill]))}
-                        className={on ? "px-unit-3 py-1 bg-secondary-container text-on-secondary-container font-label-md text-label-md" : "px-unit-3 py-1 border border-outline-variant text-on-surface-variant font-label-md text-label-md"}
-                      >
-                        {on ? "Included" : "Excluded"}
-                      </button>
+                      <div className="flex flex-wrap gap-unit-2 mt-unit-2">
+                        <Chip tone="info">{item.type}</Chip>
+                        <Chip tone={depthTone(item.depth_score)}>depth {item.depth_score}/10</Chip>
+                        <Chip tone="warn">self-declared</Chip>
+                        {item.skills.map((s) => (
+                          <Chip key={s}>{skillName(s)}</Chip>
+                        ))}
+                        {item.skills.length === 0 && (
+                          <span className="font-body-sm text-body-sm text-on-surface-variant">no catalog skill clearly evidenced</span>
+                        )}
+                      </div>
                     </li>
                   );
                 })}
               </ul>
               <div className="mt-unit-4 flex flex-wrap gap-unit-2 items-center">
-                <button type="button" className={btnPrimary} onClick={save} disabled={!selected.length}>
-                  Save as evidence ({selected.length})
+                <button type="button" className={btnPrimary} onClick={() => void save()} disabled={!chosenCount}>
+                  Save {chosenCount} item(s) as evidence
                 </button>
-                <Chip tone="warn">Resume evidence carries low weight until backed by a project or certificate</Chip>
+                <Chip tone="warn">Saved as self-reported until a mentor verifies it</Chip>
               </div>
             </>
           )}
-          {saved && <p className="mt-unit-3 bg-secondary-container text-on-secondary-container px-unit-3 py-unit-2 font-body-sm text-body-sm">{saved}</p>}
         </Panel>
       </div>
 
       <div className="mt-unit-6">
         <Explain>
-          This is deterministic keyword/alias matching, not semantic NLP. The architecture keeps extraction behind a
-          single function so it can later be swapped for a server-side NLP model with pgvector embeddings without
-          touching the UI.
+          The AI only proposes items; it cannot verify them. Skills are restricted to the fixed catalog, and the depth
+          rating reflects how much concrete detail the resume gives. Once saved, scoring is done by the same transparent
+          rule-based engine used everywhere else — evidence type, verification status, detail, recency and outcomes.
         </Explain>
       </div>
     </AppShell>
